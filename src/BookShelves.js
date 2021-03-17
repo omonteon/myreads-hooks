@@ -2,6 +2,7 @@ import React from 'react';
 import BookShelf from './BookShelf';
 import { Link } from 'react-router-dom';
 
+// This would probably be fetched from an API in an ideal case ?
 const SHELVES = [
   {
     index: 0,
@@ -19,7 +20,7 @@ const SHELVES = [
     title: 'Read'
   }
 ]
-function BookShelves({ books = [] }) {
+function BookShelves({ books = [], onShelfChange }) {
   return (
     <div className="list-books">
       <div className="list-books-title">
@@ -32,8 +33,9 @@ function BookShelves({ books = [] }) {
               key={shelf.key}
               title={shelf.title}
               books={books.filter(book => book.shelf === shelf.key)}
+              onShelfChange={onShelfChange}
             />
-          )}          
+          )}
         </div>
       </div>
       <div className="open-search">
