@@ -1,5 +1,5 @@
-import React from 'react'
-import * as BooksAPI from './BooksAPI'
+import React from 'react';
+import * as BooksAPI from './BooksAPI';
 import { Route } from 'react-router-dom';
 import './App.css'
 import BookShelves from './BookShelves';
@@ -30,7 +30,9 @@ class BooksApp extends React.Component {
         <Route exact path='/' render={() => (
           <BookShelves books={books} onShelfChange={this.handleShelfChange} />
         )} />
-        <Route path='/search' component={BookSearch} />
+        <Route path='/search' render={() => (
+          <BookSearch onShelfChange={this.handleShelfChange} />
+        )} />
       </div>
     )
   }
