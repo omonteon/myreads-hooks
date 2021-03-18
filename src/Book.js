@@ -1,6 +1,8 @@
 import React from 'react';
 
 function Book({ book = {}, onShelfChange = () => { } }) {
+  const thumbnail = book.imageLinks ? book.imageLinks.thumbnail : '';
+  const authors = Array.isArray(book.authors) ? book.authors : [];
   return (
     <div className="book">
       <div className="book-top">
@@ -8,7 +10,7 @@ function Book({ book = {}, onShelfChange = () => { } }) {
         <div className="book-cover" style={{
           width: 128,
           height: 193,
-          backgroundImage: `url(${book.imageLinks.thumbnail})`
+          backgroundImage: `url(${thumbnail})`
         }}>
         </div>
         <div className="book-shelf-changer">
@@ -22,7 +24,7 @@ function Book({ book = {}, onShelfChange = () => { } }) {
         </div>
       </div>
       <div className="book-title">{book.title}</div>
-      <div className="book-authors">{book.authors.join(', ')}</div>
+      <div className="book-authors">{authors.join(', ')}</div>
     </div>
   )
 }
