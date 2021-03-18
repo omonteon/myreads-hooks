@@ -9,15 +9,43 @@ class BookSearch extends Component {
     books: [],
     search: ''
   }
+  componentDidUpdate(prevProps) {
+    const { shelvesByBookID } = this.props;
+    if (prevProps.shelvesByBookID !== shelvesByBookID) {
+      const { books } = this.state;
+      this.updateBooks(books, shelvesByBookID);
+    }
+  }
   handleSearch = (event) => {
-    // TODO: Implement Debounce
     const search = event.target.value;
+    const { shelvesByBookID } = this.props; // Should I pass this as a param instead ??
+    // TODO: Implement Debounce
     this.setState({ search });
     if (search) {
-      BooksAPI.search(search).then(books => this.setState({ books })); 
+      BooksAPI.search(search)
+        .then(booksResponse => {          
+          if (Array.isArray(booksResponse)) {
+            this.updateBooks(booksResponse, shelvesByBookID);
+          } else {
+            this.setState({ books: [] });
+            // response.error What should I do with this error ??
+          }
+          
+        }); 
     } else {
       this.setState({ books: [] });
     }
+  }
+  updateBooks(books = [], shelvesByBookID = {}) {
+    this.setState({ 
+      books: books.map(book => {
+        const shelf = shelvesByBookID[book.id] || '';
+        return {
+          ...book,
+          shelf
+        }
+      })
+    });
   }
   render() {
     const { onShelfChange } = this.props;
