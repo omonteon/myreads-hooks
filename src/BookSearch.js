@@ -28,7 +28,6 @@ class BookSearch extends Component {
     if (search) {
       BooksAPI.search(search)
         .then(booksResponse => {
-          console.log(booksResponse);
           if (Array.isArray(booksResponse)) {
             this.updateBooks(booksResponse, shelvesByBookID);
           } else {
