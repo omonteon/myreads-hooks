@@ -6,7 +6,8 @@ function Book({ book = {}, onShelfChange = () => { } }) {
   return (
     <div className="book">
       <div className="book-top">
-        {/* TODO: Dimensions vary with each book */}
+        {/* I did an experiment getting the w/h by loading an Image obj 
+            but the UI looks ugly with book thumbnails of different sizes */}
         <div className="book-cover" style={{
           width: 128,
           height: 193,
