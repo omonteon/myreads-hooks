@@ -18,26 +18,29 @@ class BookSearch extends Component {
   }
   handleSearch = (event) => {
     const search = event.target.value;
-    const { shelvesByBookID } = this.props; // Should I pass this as a param instead ??
-    // TODO: Implement Debounce
     this.setState({ search });
     if (search) {
-      BooksAPI.search(search)
-        .then(booksResponse => {          
-          if (Array.isArray(booksResponse)) {
-            this.updateBooks(booksResponse, shelvesByBookID);
-          } else {
-            this.setState({ books: [] });
-            // response.error What should I do with this error ??
-          }
-          
-        }); 
+      this.searchAPIDebounce(search);
     } else {
       this.setState({ books: [] });
     }
   }
+  searchAPI = (search) => {
+    const { shelvesByBookID } = this.props; // Should I pass this as a param instead ??
+    BooksAPI.search(search)
+      .then(booksResponse => {
+        if (Array.isArray(booksResponse)) {
+          this.updateBooks(booksResponse, shelvesByBookID);
+        } else {
+          this.setState({ books: [] });
+          // response.error What should I do with this error ??
+        }
+
+      });
+  }
+  searchAPIDebounce = this.debounce(this.searchAPI, 250);
   updateBooks(books = [], shelvesByBookID = {}) {
-    this.setState({ 
+    this.setState({
       books: books.map(book => {
         const shelf = shelvesByBookID[book.id] || '';
         return {
@@ -46,6 +49,14 @@ class BookSearch extends Component {
         }
       })
     });
+  }
+  // Debounce function taken from: https://www.freecodecamp.org/news/javascript-debounce-example/
+  debounce(func, timeout = 300){
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
   }
   render() {
     const { onShelfChange } = this.props;
@@ -58,16 +69,16 @@ class BookSearch extends Component {
             <button className="close-search">Close</button>
           </Link>
           <div className="search-books-input-wrapper">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Search by title or author"
               value={search}
               onChange={this.handleSearch}
-               />
+            />
             <BookResults books={books} onShelfChange={onShelfChange} />
           </div>
         </div>
-        
+
       </div>
     )
   }
