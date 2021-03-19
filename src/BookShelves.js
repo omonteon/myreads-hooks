@@ -2,25 +2,12 @@ import React from 'react';
 import BookShelf from './BookShelf';
 import { Link } from 'react-router-dom';
 
-// This would probably be fetched from an API in an ideal case ?
-const SHELVES = [
-  {
-    index: 0,
-    key: 'currentlyReading',
-    title: 'Currently Reading'
-  },
-  {
-    index: 2,
-    key: 'wantToRead',
-    title: 'Want to Read'
-  },
-  {
-    index: 3,
-    key: 'read',
-    title: 'Read'
-  }
-]
-function BookShelves({ books = [], onShelfChange }) {
+const SHELVES_TITLES = {
+  currentlyReading: 'Currently Reading',
+  wantToRead: 'Want to read',
+  read: 'Read'
+}
+function BookShelves({ booksByShelf = {}, onShelfChange }) {
   return (
     <div className="list-books">
       <div className="list-books-title">
@@ -28,11 +15,11 @@ function BookShelves({ books = [], onShelfChange }) {
       </div>
       <div className="list-books-content">
         <div>
-          {SHELVES.map(shelf =>
+          {Object.keys(SHELVES_TITLES).map(shelf =>
             <BookShelf
-              key={shelf.key}
-              title={shelf.title}
-              books={books.filter(book => book.shelf === shelf.key)}
+              key={shelf}
+              title={SHELVES_TITLES[shelf]}
+              books={booksByShelf[shelf]}
               onShelfChange={onShelfChange}
             />
           )}
