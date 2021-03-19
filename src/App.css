@@ -70,6 +70,7 @@ body, .app {
 
 .open-search button:hover {
   background-color: rgb(0, 102, 0);
+  cursor: pointer;
 }
 
 
@@ -111,6 +112,10 @@ body, .app {
   font-size: 0;
   border: none;
   outline: none;
+}
+
+.close-search:hover {
+  cursor: pointer;
 }
 
 button:active {
