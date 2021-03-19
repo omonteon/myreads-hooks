@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function Book({ book = {}, onShelfChange = () => { } }) {
   const thumbnail = book.imageLinks ? book.imageLinks.thumbnail : '';
@@ -6,7 +7,7 @@ function Book({ book = {}, onShelfChange = () => { } }) {
   return (
     <div className="book">
       <div className="book-top">
-        {/* I did an experiment getting the w/h by loading an Image obj 
+        {/* I did an experiment getting the width/height by loading an Image obj 
             but the UI looks ugly with book thumbnails of different sizes */}
         <div className="book-cover" style={{
           width: 128,
@@ -28,6 +29,11 @@ function Book({ book = {}, onShelfChange = () => { } }) {
       <div className="book-authors">{authors.join(', ')}</div>
     </div>
   )
+}
+
+Book.propTypes = {
+  book: PropTypes.object.isRequired,
+  onShelfChange: PropTypes.func.isRequired
 }
 
 export default Book;
