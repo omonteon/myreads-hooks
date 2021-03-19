@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Book from './Book';
 
 function BooksGrid({ books = [], onShelfChange }) {
@@ -7,6 +8,11 @@ function BooksGrid({ books = [], onShelfChange }) {
       {books.map(book => <li key={book.id}><Book book={book} onShelfChange={onShelfChange} /></li>)}
     </ol>
   )
+}
+
+BooksGrid.propTypes = {
+  books: PropTypes.array,
+  onShelfChange: PropTypes.func.isRequired
 }
 
 export default BooksGrid;
