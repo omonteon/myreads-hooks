@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
+import PropTypes from 'prop-types';
 import BookResults from './BookResults'; // Should these imports be default or named ??
 
 class BookSearch extends Component {
@@ -83,6 +84,11 @@ class BookSearch extends Component {
       </div>
     )
   }
+}
+
+BookSearch.propTypes = {
+  shelvesByBookID: PropTypes.object.isRequired,
+  onShelfChange: PropTypes.func.isRequired
 }
 
 export default BookSearch;
