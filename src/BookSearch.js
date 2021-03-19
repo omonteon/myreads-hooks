@@ -19,24 +19,26 @@ class BookSearch extends Component {
   handleSearch = (event) => {
     const search = event.target.value;
     this.setState({ search });
-    if (search) {
-      this.searchAPIDebounce(search);
-    } else {
-      this.setState({ books: [] });
-    }
+    // Should I let the query return a 403 or avoid doing the query if the search is empty ??
+    this.searchAPIDebounce(search);
   }
   searchAPI = (search) => {
     const { shelvesByBookID } = this.props; // Should I pass this as a param instead ??
-    BooksAPI.search(search)
-      .then(booksResponse => {
-        if (Array.isArray(booksResponse)) {
-          this.updateBooks(booksResponse, shelvesByBookID);
-        } else {
-          this.setState({ books: [] });
-          // response.error What should I do with this error ??
-        }
-
-      });
+    if (search) {
+      BooksAPI.search(search)
+        .then(booksResponse => {
+          console.log(booksResponse);
+          if (Array.isArray(booksResponse)) {
+            this.updateBooks(booksResponse, shelvesByBookID);
+          } else {
+            this.setState({ books: [] });
+            // Should I do something with this error ??
+            // {error: "empty query", items: Array(0)}
+          }
+        });
+    } else {
+      this.setState({ books: [] });
+    }
   }
   searchAPIDebounce = this.debounce(this.searchAPI, 250);
   updateBooks(books = [], shelvesByBookID = {}) {
@@ -51,7 +53,7 @@ class BookSearch extends Component {
     });
   }
   // Debounce function taken from: https://www.freecodecamp.org/news/javascript-debounce-example/
-  debounce(func, timeout = 300){
+  debounce(func, timeout = 300) {
     let timer;
     return (...args) => {
       clearTimeout(timer);
@@ -75,10 +77,9 @@ class BookSearch extends Component {
               value={search}
               onChange={this.handleSearch}
             />
-            <BookResults books={books} onShelfChange={onShelfChange} />
           </div>
         </div>
-
+        <BookResults books={books} onShelfChange={onShelfChange} />
       </div>
     )
   }
