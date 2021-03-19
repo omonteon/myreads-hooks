@@ -14,12 +14,12 @@ function Book({ book = {}, onShelfChange = () => { } }) {
         }}>
         </div>
         <div className="book-shelf-changer">
-          <select value={book.shelf || ''} onChange={(e) => onShelfChange(book, e.target.value)}>
+          <select value={book.shelf || 'none'} onChange={(e) => onShelfChange(book, e.target.value)}>
             <option value="move" disabled>Move to...</option>
             <option value="currentlyReading">Currently Reading</option>
             <option value="wantToRead">Want to Read</option>
             <option value="read">Read</option>
-            <option value="">None</option>
+            <option value="none">None</option>
           </select>
         </div>
       </div>
