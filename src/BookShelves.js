@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import BookShelf from './BookShelf';
 
-// Is this a recommended practice ??
+// CODE REVIEW QUESTION: Is this a recommended practice ?
 // I thought about it sort of like an Enum from Java or C#
 const SHELVES_TITLES = {
   currentlyReading: 'Currently Reading',
   wantToRead: 'Want to read',
   read: 'Read'
 }
-// Does declaring a default value defeat the purpose of using a Proptype?
 function BookShelves({ booksByShelf = {}, onShelfChange }) {
   return (
     <div className="list-books">

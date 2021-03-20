@@ -12,13 +12,20 @@ class BooksApp extends React.Component {
     shelvesByBookID: {}
   }
   componentDidMount() {
-    // TODO: How should errors from the API calls be handled ?
+    // CODE REVIEW QUESTION: How should errors from the API calls be handled ?
     BooksAPI.getAll().then(books => this.setState({
       books,
       booksByShelf: this.getBooksByShelf(books),
-      shelvesByBookID: this.getshelvesByBookID(books)
+      shelvesByBookID: this.getShelvesByBookID(books)
     }));
   }
+  /**
+   * This function creates and returns an object from an array of books.
+   * The object is used to access books by shelf quickly.
+   * 
+   * @param {Object[]} books Array of book objects
+   * @returns {Object} Object that maps book objects by shelf Ids
+   */
   getBooksByShelf(books = []) {
     const booksByShelf = {};
     books.forEach(book => {
@@ -30,15 +37,29 @@ class BooksApp extends React.Component {
     });
     return booksByShelf;
   }
-  getshelvesByBookID(books = []) {
+  /**
+   * This function creates and returns an object from an array of books. 
+   * The object is used to know what is the shelf of a book.
+   * 
+   * @param {Object[]} books Array of book objects
+   * @returns {Object} Object that maps shelves by book id
+   */
+  getShelvesByBookID(books = []) {
     const shelvesByBookID = {};
     books.forEach(book => {
       shelvesByBookID[book.id] = book.shelf;
     });
     return shelvesByBookID;
   }
-  handleShelfChange = (book = {}, shelf = 'none') => {
-    // How could I use this response (arrays of ids of books by shelf) ??
+  /**
+   * Handler for when a book shelf changes.
+   * Updates the API and the corresponding state.
+   * 
+   * @param {Object} book 
+   * @param {string} shelf 
+   */
+  handleShelfChange = (book = {}, shelf = 'none') => {    
+    // CODE REVIEW QUESTION: How could I use the response from this API call help ? (I couldn't find how to use it)
     BooksAPI.update(book, shelf).then(bookIDsByShelf => {
       this.setState(currentState => {
         // I use filter + concat to match with BooksAPI.getAll shelf order.
@@ -49,7 +70,7 @@ class BooksApp extends React.Component {
         return {
           books: updatedBooks,
           booksByShelf: this.getBooksByShelf(updatedBooks),
-          shelvesByBookID: this.getshelvesByBookID(updatedBooks),
+          shelvesByBookID: this.getShelvesByBookID(updatedBooks),
         }
       });
     });
