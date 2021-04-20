@@ -1,24 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as BooksAPI from './BooksAPI';
 import { Route } from 'react-router-dom';
 import './App.css'
 import BookShelves from './BookShelves';
 import BookSearch from './BookSearch';
 
-class BooksApp extends React.Component {
-  state = {
-    books: [],
-    booksByShelf: {},
-    shelvesByBookID: {}
-  }
-  componentDidMount() {
-    // CODE REVIEW QUESTION: How should errors from the API calls be handled ?
-    BooksAPI.getAll().then(books => this.setState({
-      books,
-      booksByShelf: this.getBooksByShelf(books),
-      shelvesByBookID: this.getShelvesByBookID(books)
-    }));
-  }
+function BooksApp() {
+  const [books, setBooks] = useState([]);
+  const [booksByShelf, setBooksByShelf] = useState({});
+  const [shelvesByBookID, setShelvesByBookID] = useState({});
+
+  useEffect(() => {
+    BooksAPI.getAll().then(books => {
+      setBooks(books);
+      setBooksByShelf(getBooksByShelf(books));
+      setShelvesByBookID(getShelvesByBookID(books));
+    });
+  }, []);
+
   /**
    * This function creates and returns an object from an array of books.
    * The object is used to access books by shelf quickly.
@@ -26,7 +25,7 @@ class BooksApp extends React.Component {
    * @param {Object[]} books Array of book objects
    * @returns {Object} Object that maps book objects by shelf Ids
    */
-  getBooksByShelf(books = []) {
+  function getBooksByShelf(books = []) {
     const booksByShelf = {};
     books.forEach(book => {
       if (Array.isArray(booksByShelf[book.shelf]) && book.shelf) {
@@ -44,7 +43,7 @@ class BooksApp extends React.Component {
    * @param {Object[]} books Array of book objects
    * @returns {Object} Object that maps shelves by book id
    */
-  getShelvesByBookID(books = []) {
+  function getShelvesByBookID(books = []) {
     const shelvesByBookID = {};
     books.forEach(book => {
       shelvesByBookID[book.id] = book.shelf;
@@ -58,36 +57,28 @@ class BooksApp extends React.Component {
    * @param {Object} book 
    * @param {string} shelf 
    */
-  handleShelfChange = (book = {}, shelf = 'none') => {    
-    // CODE REVIEW QUESTION: How could I use the response from this API call help ? (I couldn't find how to use it)
+  function handleShelfChange(book = {}, shelf = 'none') {
     BooksAPI.update(book, shelf).then(bookIDsByShelf => {
-      this.setState(currentState => {
-        // I use filter + concat to match with BooksAPI.getAll shelf order.
-        // The response always puts the updated book at the end of the same shelf items of the array.
-        const updatedBooks = currentState.books
-          .filter(currentBook => currentBook.id !== book.id)
-          .concat({ ...book, shelf });
-        return {
-          books: updatedBooks,
-          booksByShelf: this.getBooksByShelf(updatedBooks),
-          shelvesByBookID: this.getShelvesByBookID(updatedBooks),
-        }
-      });
+      // I use filter + concat to match with BooksAPI.getAll shelf order.
+      // The response always puts the updated book at the end of the same shelf items of the array.
+      const updatedBooks = books
+        .filter(currentBook => currentBook.id !== book.id)
+        .concat({ ...book, shelf });
+      setBooks(updatedBooks);
+      setBooksByShelf(getBooksByShelf(updatedBooks));
+      setShelvesByBookID(getShelvesByBookID(updatedBooks));
     });
   }
-  render() {
-    const { booksByShelf, shelvesByBookID } = this.state;
-    return (
-      <div className="app">
-        <Route exact path='/' render={() => (
-          <BookShelves booksByShelf={booksByShelf} onShelfChange={this.handleShelfChange} />
-        )} />
-        <Route path='/search' render={() => (
-          <BookSearch shelvesByBookID={shelvesByBookID} onShelfChange={this.handleShelfChange} />
-        )} />
-      </div>
-    )
-  }
+  return (
+    <div className="app">
+      <Route exact path='/' render={() => (
+        <BookShelves booksByShelf={booksByShelf} onShelfChange={handleShelfChange} />
+      )} />
+      <Route path='/search' render={() => (
+        <BookSearch shelvesByBookID={shelvesByBookID} onShelfChange={handleShelfChange} />
+      )} />
+    </div>
+  )
 }
 
-export default BooksApp
+export default BooksApp;
